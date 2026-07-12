@@ -11,6 +11,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show files
+        run: |
+          ls -R
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -20,26 +24,19 @@ jobs:
       - name: Find Flutter project
         id: flutter_project
         run: |
-          PROJECT_PATH=$(dirname "$(find . -name pubspec.yaml | head -1)")
-          echo "Flutter project found at: $PROJECT_PATH"
-          echo "path=$PROJECT_PATH" >> $GITHUB_OUTPUT
-
-      - name: Show files
-        run: |
-          ls -la
-          echo "Project folder:"
-          ls -la "${{ steps.flutter_project.outputs.path }}"
+          PROJECT=$(find . -name pubspec.yaml -exec dirname {} \; | head -n 1)
+          echo "PROJECT=$PROJECT" >> $GITHUB_ENV
 
       - name: Install packages
-        working-directory: ${{ steps.flutter_project.outputs.path }}
+        working-directory: ${{ env.PROJECT }}
         run: flutter pub get
 
       - name: Build APK
-        working-directory: ${{ steps.flutter_project.outputs.path }}
+        working-directory: ${{ env.PROJECT }}
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-APK
-          path: ${{ steps.flutter_project.outputs.path }}/build/app/outputs/flutter-apk/app-release.apk
+          path: ${{ env.PROJECT }}/build/app/outputs/flutter-apk/app-release.apk
