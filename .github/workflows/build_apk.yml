@@ -19,11 +19,12 @@ jobs:
       - name: Install packages
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+    - name: Build APK
+  working-directory: AlghraibiERP-Flutter-main
+  run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AlghraibiERP-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+  path: AlghraibiERP-Flutter-main/build/app/outputs/flutter-apk/app-release.apk
