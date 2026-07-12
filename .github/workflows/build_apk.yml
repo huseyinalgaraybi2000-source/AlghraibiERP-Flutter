@@ -11,20 +11,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show files
+        run: |
+          ls -la
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.16.9'
           channel: stable
 
-      - name: Check files
+      - name: Find Flutter project
         run: |
-          ls -la
+          find . -name pubspec.yaml
 
       - name: Install packages
+        working-directory: .
         run: flutter pub get
 
       - name: Build APK
+        working-directory: .
         run: flutter build apk --release
 
       - name: Upload APK
